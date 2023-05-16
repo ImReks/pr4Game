@@ -85,14 +85,6 @@ export class Level extends TileMap
                         sprite=this.spriteSheet.getSprite(this.xCoord[15],this.yCoord[15]-1)
                        // sprite.tint = Color.fromHSL(0,0,0.5+bright*0.5);
                     }
-                    else if(rng>0.9)
-                    {
-                        let plant = new Actor()
-                        plant.pos = new Vector(32*x+16,32*y+16);
-                        plant.graphics.use(Resources.plant.toSprite())
-                        plant.z = 1000;
-                        this.addChild(plant);
-                    }
                     if(this.hasSpawn==false)
                     {
                         this.hasSpawn=true;
