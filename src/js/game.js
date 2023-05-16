@@ -40,7 +40,7 @@ export class Game extends Engine {
         this.add(playerObject)
 
         this.currentScene.camera.strategy.lockToActor(playerObject);
-       this.showDebug(true);
+       //this.showDebug(true);
 
     }
 
