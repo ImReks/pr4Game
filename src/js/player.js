@@ -1,32 +1,42 @@
-import {Actor,Vector,TileMap,Input} from "excalibur";
+import {Actor, Vector, TileMap, Input, Circle, CircleCollider, Shape, CollisionType} from "excalibur";
+import {Resources} from "./resources.js";
 export class player extends Actor
 {
-    constructor(map) {
-        super({x:300,y:300});
+    constructor(x,y) {
+        super({pos:new Vector(1500,1500),collisionType: CollisionType.Active});
+        this.graphics.use(Resources.Fish.toSprite())
+        this.z = 1000
+        this.scale.x = 0.5
+        this.scale.y = 0.5
+        let circle = Shape.Circle(32)
+        this.collider.set(circle);
+
     }
     onInitialize(_engine) {
         super.onInitialize(_engine);
+       // this.graphics.use(Resources.Fish.toSprite())
+       //
+
     }
-    update(_engine, delta)
-    {
-        super.update(_engine, delta);
+    onPreUpdate(_engine, _delta) {
+        super.onPreUpdate(_engine, _delta);
         this.vel = new Vector(0,0);
         if(_engine.input.keyboard.isHeld(Input.Keys.D))
         {
-            this.vel.x=300;
+            this.vel.x=150;
         }
         else if(_engine.input.keyboard.isHeld(Input.Keys.A))
         {
-            this.vel.x=-300
+            this.vel.x=-150
         }
 
         if(_engine.input.keyboard.isHeld(Input.Keys.W))
         {
-            this.vel.y=-300;
+            this.vel.y=-150;
         }
         else if(_engine.input.keyboard.isHeld(Input.Keys.S))
         {
-            this.vel.y=300
+            this.vel.y=150
         }
       //  this.logger.info(`${this.vel.x},${this.vel.y}`)
     }

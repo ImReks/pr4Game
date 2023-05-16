@@ -1,4 +1,4 @@
-import {Tile, TileMap, SpriteSheet, Actor,Vector,Color} from "excalibur";
+import {Tile, TileMap, SpriteSheet, Actor, Vector, Color, EdgeCollider, CompositeCollider} from "excalibur";
 import {Resources} from "./resources.js";
 import {Noise} from "./noise.js";
 
@@ -13,6 +13,10 @@ export class Level extends TileMap
     yCoord=[16,15,15,15,16,20,16,15,16,16,20,15,17,17,17,16]
     xOffset;
     yOffset;
+
+    xSpawn
+    ySpawn
+    hasSpawn
 
     constructor(options,radius)
     {
@@ -89,9 +93,121 @@ export class Level extends TileMap
                         plant.z = 1000;
                         this.addChild(plant);
                     }
+                    if(this.hasSpawn==false)
+                    {
+                        this.hasSpawn=true;
+                        this.tiles[tileIndex].pos.x
+                        this.xSpawn = this.tiles[tileIndex].pos.x
+                        this.ySpawn = this.tiles[tileIndex].pos.y;
+                    }
                 }
              //   sprite.tint = Color.fromHSL(0,0,0.75+bright*0.25,1);
+                let col;
                 this.tiles[tileIndex].addGraphic(sprite);
+                switch (tileCase)
+                {
+                    case 1:
+                        this.tiles[tileIndex].solid=true;
+                        col = new EdgeCollider({
+                            begin: new Vector(0,16),
+                            end: new Vector(16,0)
+                        })
+                        this.tiles[tileIndex].addCollider(col)
+                        break
+                    case 2:
+                        this.tiles[tileIndex].solid=true;
+                         col = new EdgeCollider({
+                            begin: new Vector(32,16),
+                            end: new Vector(16,0)
+                        })
+                        this.tiles[tileIndex].addCollider(col)
+                        break
+                    case 3:
+                        this.tiles[tileIndex].solid=true;
+                        col = new EdgeCollider({
+                            begin: new Vector(32,16),
+                            end: new Vector(0,16)
+                        })
+                        this.tiles[tileIndex].addCollider(col)
+                        break
+                    case 4:
+                        this.tiles[tileIndex].solid=true;
+                        col = new EdgeCollider({
+                            begin: new Vector(16,32),
+                            end: new Vector( 32,16)
+                        })
+                        this.tiles[tileIndex].addCollider(col)
+                        break
+                    case 5:
+                        break
+                    case 6:
+                        this.tiles[tileIndex].solid=true;
+                        col = new EdgeCollider({
+                            begin: new Vector(16,32),
+                            end: new Vector( 16,0)
+                        })
+                        this.tiles[tileIndex].addCollider(col)
+                        break
+                    case 7:
+                        this.tiles[tileIndex].solid=true;
+                        col = new EdgeCollider({
+                            begin: new Vector(0,16),
+                            end: new Vector( 16,32)
+                        })
+                        this.tiles[tileIndex].addCollider(col)
+                        break
+                    case 8:
+                        this.tiles[tileIndex].solid=true;
+                        col = new EdgeCollider({
+                            begin: new Vector(0,16),
+                            end: new Vector( 16,32)
+                        })
+                        this.tiles[tileIndex].addCollider(col)
+                        break
+                    case 9:
+                        this.tiles[tileIndex].solid=true;
+                        col = new EdgeCollider({
+                            begin: new Vector(16,0),
+                            end: new Vector( 16,32)
+                        })
+                        this.tiles[tileIndex].addCollider(col)
+                        break
+                    case 10:
+                        break
+                    case 11:
+                        this.tiles[tileIndex].solid=true;
+                        col = new EdgeCollider({
+                            begin: new Vector(16,32),
+                            end: new Vector( 32,16)
+                        })
+                        this.tiles[tileIndex].addCollider(col)
+                        break
+                    case 12:
+                        this.tiles[tileIndex].solid=true;
+                        col = new EdgeCollider({
+                            begin: new Vector(0,16),
+                            end: new Vector( 32,16)
+                        })
+                        this.tiles[tileIndex].addCollider(col)
+                        break
+                    case 14:
+                        this.tiles[tileIndex].solid=true;
+                        col = new EdgeCollider({
+                            begin: new Vector(0,16),
+                            end: new Vector(16,0)
+                        })
+                        this.tiles[tileIndex].addCollider(col)
+                        break
+                    case 13:
+                        this.tiles[tileIndex].solid=true;
+                        col = new EdgeCollider({
+                            begin: new Vector(32,16),
+                            end: new Vector(16,0)
+                        })
+                        this.tiles[tileIndex].addCollider(col)
+                        break
+                }
+
             }
         }
     }
