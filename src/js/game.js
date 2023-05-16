@@ -8,10 +8,8 @@ import {
     Vector,
     Color,
     Timer,
-    IsometricEntityComponent, IsometricEntitySystem
 } from "excalibur"
 import { Resources, ResourceLoader } from './resources.js'
-import {levelChunk} from "./levelChunk.js";
 import {player} from "./player.js";
 import {Level} from "./Level.js";
 
