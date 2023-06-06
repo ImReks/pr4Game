@@ -1,13 +1,18 @@
-import { ImageSource, Sound, Resource, Loader, SpriteSheet } from 'excalibur'
-import fishImage from '../images/fish.png'
-import forestTileset from "../images/forestTileset.png"
-import  plant from "../images/plant.png"
-
+import { ImageSource, Sound, Resource, Loader } from 'excalibur'
+import  player from "../images/playerSpaceShip.png"
+import  shoter from "../images/Shoter.png"
+import  chaser from "../images/Chaser.png"
+import  background from "../images/backGround.png"
+import  meteor from "../images/meteor.png"
+import bullet from "../images/BulletPlayer.png"
 const Resources = {
-    Fish: new ImageSource(fishImage),
-    forest: new ImageSource(forestTileset),
-    plant: new ImageSource(plant)
+    player : new ImageSource(player),
+    shoter : new ImageSource(shoter),
+    chaser : new ImageSource(chaser),
+    background : new ImageSource(background),
+    meteor: new ImageSource(meteor),
+    bullet:new ImageSource(bullet)
 }
-const ResourceLoader = new Loader([Resources.Fish,Resources.forest,Resources.plant]);
+const ResourceLoader = new Loader([Resources.player,Resources.shoter,Resources.chaser,Resources.background,Resources.meteor, Resources.bullet]);
 
 export { Resources, ResourceLoader }
