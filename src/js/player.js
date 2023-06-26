@@ -1,57 +1,120 @@
-import {spaceShip} from "./spaceShip.js";
-import {Actor, Vector, Input, Shape, CollisionType} from "excalibur";
-import {Resources} from "./resources.js";
-import {bullet} from "./bullet.js";
 
-export class player extends spaceShip
+import {Actor, Vector, Input, Shape, CollisionType,Color} from "excalibur";
+import {Resources} from "./resources.js";
+import {Tunnel} from "./tunnel.js";
+import {MathFunctions} from "./MathFunctions.js";
+
+export class player extends Actor
 {
     game;
-    angle;
 
-    reload;
+    speed=500
 
-    score;
-    label;
-    lastVel;
+    layers=[];
+    layerActors=[];
+
+    startZ=32;
+
+    segmentSpeed=25;
+
+    movementArea;
+    maxDistance=512+64;
+
+    delta;
     constructor() {
-        super(1,1);
-this.score=0;
-this.reload=0;
+        super()
     }
     onInitialize(_engine) {
         super.onInitialize(_engine);
         this.game=_engine;
-        this.pos = new Vector(768/2,620/2)
-        this.scale=new Vector(1.5,1.5)
-        this.graphics.use(Resources.player.toSprite())
+
+        this.layers=[
+            Resources.pl0,
+            Resources.pl1,
+            Resources.pl1,
+            Resources.pl2,
+            Resources.pl2,
+            Resources.pl3,
+            Resources.pl3,
+            Resources.pl3,
+            Resources.pl4,
+            Resources.pl4,
+            Resources.pl5,
+            Resources.pl5,
+            Resources.pl5,
+            Resources.pl6,
+            Resources.pl6,
+        ]
+        for(let i =0;i<this.layers.length;i++)
+        {
+            let layer = new Actor();
+            layer.pos = new Vector(400,300)
+            layer.z=this.startZ+i;
+            let sprite = this.layers[i].toSprite();
+            sprite.tint = Color.fromHSL(0,0,(i/this.layers.length)*0.3+0.3,1)
+            layer.graphics.use(sprite);
+
+            this.game.currentScene.add(layer);
+            this.layerActors.push(layer);
+        }
+
+        //this.scale=new Vector(1.5,1.5)
         this.collider.set(Shape.Circle(16))
-        this.body.mass= 2.5
-
         this.body.collisionType = CollisionType.Active;
-
+        this.movementArea=this.game.currentScene.bounds;
     }
     onPostUpdate(_engine, _delta) {
-        console.log(this.score);
+        this.delta=_delta/1000;
+        if(Vector.distance(this.pos,this.movementArea.pos)>this.maxDistance)
+        {
+            this.gameOver();
+        }
         //this.label.text=this.score.toString();
         super.onPostUpdate(_engine, _delta);
+        let moveVel = this.input();
+        moveVel.x *=this.speed;
+        moveVel.y *=this.speed;
+
+        let vel = new Vector(0,0);
+        vel.x = MathFunctions.lerp(this.vel.x,moveVel.x,this.delta*this.segmentSpeed);
+        vel.y = MathFunctions.lerp(this.vel.y,moveVel.y,this.delta*this.segmentSpeed);
+        //this.layerActors[0].vel=vel;
+        this.vel=vel;
+        this.layerMove();
+        //this.shooting()
+    }
+    layerMove()
+    {
+        let previous = this.pos;
+        for(let i = 0;i<this.layers.length;i++)
+        {
+            let current = this.layerActors[i].pos;
+            let nx = MathFunctions.lerp(current.x,previous.x,this.delta*this.segmentSpeed);
+            let ny = MathFunctions.lerp(current.y,previous.y,this.delta*this.segmentSpeed);
+            this.layerActors[i].pos = new Vector(nx,ny);
+            previous=this.layerActors[i].pos;
+        }
+    }
+    input()
+    {
         let vel = new Vector(0,0);
         let pressing = false;
-        if(_engine.input.keyboard.isHeld(Input.Keys.W))
+        if(this.game.input.keyboard.isHeld(Input.Keys.W))
         {
             vel.y=-1;
             pressing=true;
         }
-        else if(_engine.input.keyboard.isHeld(Input.Keys.S))
+        else if(this.game.input.keyboard.isHeld(Input.Keys.S))
         {
             vel.y=1;
             pressing=true
         }
-        if(_engine.input.keyboard.isHeld(Input.Keys.D))
+        if(this.game.input.keyboard.isHeld(Input.Keys.D))
         {
             vel.x=1;
             pressing=true
         }
-        else if(_engine.input.keyboard.isHeld(Input.Keys.A))
+        else if(this.game.input.keyboard.isHeld(Input.Keys.A))
         {
             vel.x=-1;
             pressing=true
@@ -59,31 +122,20 @@ this.reload=0;
         if(pressing)
         {
             vel=vel.normalize();
-            vel.x *=500;
-            vel.y*=500;
-            this.angle=vel.toAngle();
-            this.lastVel = vel;
         }
-        this.vel=vel;
-        this.rotation=this.angle;
-        this.shooting()
+        return vel
     }
-    shooting()
+    gameOver()
     {
-        this.reload--;
-        if(this.game.input.keyboard.isHeld(Input.Keys.Space) && this.reload<0)
+        console.log("gameOver")
+        this.game.score=Tunnel.score;
+        this.game.goToScene("GameOver")
+    }
+    _prekill(_scene) {
+        super._prekill(_scene);
+        for(let i =0;i<this.layerActors.length;i++)
         {
-            this.reload=90;
-            let bvel = this.lastVel.normalize();
-            let bpos = this.pos;
-            bvel.x*=700;
-            bvel.y*=700;
-
-
-            let pbullet = new bullet(50,bpos,bvel);
-            pbullet.rotation=this.angle;
-            pbullet.owner=this;
-            this.scene.add(pbullet);
+            this.layerActors[i].kill();
         }
     }
 }
